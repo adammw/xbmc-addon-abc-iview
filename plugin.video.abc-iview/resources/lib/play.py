@@ -35,6 +35,13 @@ def play(url):
 	iview_config = comm.get_config()
 	auth = comm.get_auth(iview_config)
 
+	# We don't support Adobe HDS yet
+	# Fallback to RTMP streaming server
+	if auth['rtmp_url'].startswith('http://'):
+		auth['rtmp_url'] = iview_config['rtmp_url'] or 'rtmp://cp53909.edgefcs.net/ondemand'
+		auth['playpath_prefix'] = config.akamai_playpath_prefix
+		utils.log("Adobe HDS Not Supported, using fallback server %s" % auth['rtmp_url'])
+
 	p = classes.Program()
 	p.parse_xbmc_url(url)
 
